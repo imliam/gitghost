@@ -18,5 +18,8 @@
             "name": "Liam Hammett",
             "email": "liam@liamhammett.com"
         }
+    ],
+    "bin": [
+        "gitghost"
     ]
 }
