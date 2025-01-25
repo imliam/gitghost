@@ -20,7 +20,7 @@ GitHub activity graph after syncing work activity using GitGhost:
 
 ## Installation
 
-Using Composer, you can install GitGhost globally with the following command:
+GitGhost requires PHP. Using [Composer](https://getcomposer.org/), you can install GitGhost globally with the following command:
 
 ```bash
 composer global require imliam/gitghost
