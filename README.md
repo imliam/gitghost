@@ -1,13 +1,13 @@
 # GitGhost
 
-GitGhost is a command-line tool that mirrors your Git activity from one repository to another, allowing you to synchronize commits from a private repository (e.g., on GitLab) to a dummy repository on GitHub.
+GitGhost is a command-line tool that mirrors your Git activity from one repository to another, allowing you to synchronize your commit history from a private repository (e.g., on GitLab) to a dummy repository on GitHub.
 
-This helps maintain a more accurate graph to show your coding habits without exposing your private repository's contents to a third party service.
+This helps maintain a more accurate graph to show your real coding habits without exposing your private repository's contents to a third party service.
 
-GitHub contribution graph:
+GitHub activity graph before using GitGhost:
 ![Before](./assets/before.png)
 
-GitHub AND private GitLab contribution graph:
+GitHub activity graph after syncing work activity using GitGhost:
 ![After](./assets/after.png)
 
 ## Features
