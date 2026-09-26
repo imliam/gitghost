@@ -2,6 +2,8 @@
 
 namespace GitGhost\Service;
 
+use GitGhost\GitHelper;
+
 class RepoManager
 {
     private $config;
@@ -18,10 +20,12 @@ class RepoManager
 
         // Get commits filtered by author
         $filterAuthor = $this->config['filter_author'];
-        $authorFilter = $filterAuthor ? "--author=$filterAuthor" : '';
-
-        $logOutput = [];
-        exec("git log $authorFilter --pretty=format:\"%H|%s|%at\"", $logOutput);
+        $gitLogCommand = ['git', 'log'];
+        if ($filterAuthor) {
+            $gitLogCommand[] = "--author=$filterAuthor";
+        }
+        $gitLogCommand[] = '--pretty=format:%H|%s|%at';
+        $logOutput = GitHelper::run($gitLogCommand, $originalRepoPath)['output'];
 
         // Process each commit
         $newCommits = [];
