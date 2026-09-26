@@ -7,12 +7,12 @@ class GitHelper
     /**
      * Run a Git command in a specific directory using proc_open.
      *
-     * @param string $command The Git command to run (e.g., "git log").
+     * @param string|array $command The Git command to run (e.g., ['git', 'log']).
      * @param string $workingDirectory The directory where the command should be run.
      * @param ?string $timestamp GIT_COMMITER_DATE as environment variable
      * @return array An array with 'success' (bool), 'output' (array of lines), and 'error' (string).
      */
-    public static function run(string $command, string $workingDirectory, ?string $timestamp = null): array
+    public static function run(string|array $command, string $workingDirectory, ?string $timestamp = null): array
     {
         $descriptorSpec = [
             0 => ['pipe', 'r'], // STDIN
@@ -43,12 +43,13 @@ class GitHelper
         fclose($pipes[2]);
 
         $returnCode = proc_close($process);
+        $output = trim($output);
 
         return [
             'success' => $returnCode === 0,
             // Git always outputs as \n, even in Windows, still
             // Use a regex to match either \r\n, \r, or \n
-            'output' => preg_split('/\r\n|\r|\n/', trim($output)),
+            'output' => $output === '' ? [] : preg_split('/\r\n|\r|\n/', $output),
             'error' => trim($error),
         ];
     }

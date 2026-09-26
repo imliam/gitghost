@@ -87,8 +87,11 @@ class SyncCommand extends Command
         $newCommits = [];
 
         // Get commits from the original repo
-        $authorFilter = empty($filterAuthors) ? '' : '--author=' . implode(' --author=', $filterAuthors);
-        $gitLogCommand = "git log $authorFilter --pretty=format:\"%H|%at\"";
+        $gitLogCommand = ['git', 'log'];
+        foreach ($filterAuthors as $author) {
+            $gitLogCommand[] = "--author=$author";
+        }
+        $gitLogCommand[] = '--pretty=format:%H|%at';
         $result = GitHelper::run($gitLogCommand, $originalRepoPath);
 
         if (!$result['success']) {

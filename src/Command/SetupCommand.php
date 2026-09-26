@@ -3,6 +3,7 @@
 namespace GitGhost\Command;
 
 use GitGhost\ConfigManager;
+use GitGhost\GitHelper;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -61,11 +62,19 @@ class SetupCommand extends Command
         // Ask for the name/email for ghost commits
         $defaultAuthorName = $config['author_name'] ?? null;
         $authorName = $io->ask('Enter the name for ghost commits', $defaultAuthorName);
-        exec("git config --local user.name \"$authorName\"");
+        $nameResult = GitHelper::run(['git', 'config', '--local', 'user.name', $authorName ?? ''], $dummyRepoPath);
+        if (!$nameResult['success']) {
+            $io->error('Failed to set the commit author name: ' . $nameResult['error']);
+            return Command::FAILURE;
+        }
 
         $defaultAuthorEmail = $config['author_email'] ?? null;
         $authorEmail = $io->ask('Enter the email for ghost commits', $defaultAuthorEmail);
-        exec("git config --local user.email \"$authorEmail\"");
+        $emailResult = GitHelper::run(['git', 'config', '--local', 'user.email', $authorEmail ?? ''], $dummyRepoPath);
+        if (!$emailResult['success']) {
+            $io->error('Failed to set the commit author email: ' . $emailResult['error']);
+            return Command::FAILURE;
+        }
 
         // Collect multiple authors for filtering commits
         $authors = $config['filter_authors'] ?? [];
