@@ -61,9 +61,11 @@ class SetupCommand extends Command
         // Ask for the name/email for ghost commits
         $defaultAuthorName = $config['author_name'] ?? null;
         $authorName = $io->ask('Enter the name for ghost commits', $defaultAuthorName);
+        exec("git config --local user.name \"$authorName\"");
 
         $defaultAuthorEmail = $config['author_email'] ?? null;
         $authorEmail = $io->ask('Enter the email for ghost commits', $defaultAuthorEmail);
+        exec("git config --local user.email \"$authorEmail\"");
 
         // Collect multiple authors for filtering commits
         $authors = $config['filter_authors'] ?? [];

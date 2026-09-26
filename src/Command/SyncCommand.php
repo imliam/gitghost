@@ -88,7 +88,7 @@ class SyncCommand extends Command
 
         // Get commits from the original repo
         $authorFilter = empty($filterAuthors) ? '' : '--author=' . implode(' --author=', $filterAuthors);
-        $gitLogCommand = "git log $authorFilter --pretty=format:'%H|%at'";
+        $gitLogCommand = "git log $authorFilter --pretty=format:\"%H|%at\"";
         $result = GitHelper::run($gitLogCommand, $originalRepoPath);
 
         if (!$result['success']) {
@@ -144,8 +144,8 @@ class SyncCommand extends Command
                 continue;
             }
 
-            $commitCommand = "GIT_COMMITTER_DATE='$timestamp' git commit -m $escapedMessage --date='$timestamp'";
-            $commitResult = GitHelper::run($commitCommand, $dummyRepoPath);
+            $commitCommand = "git commit -m $escapedMessage --date=\"$timestamp\"";
+            $commitResult = GitHelper::run($commitCommand, $dummyRepoPath, $timestamp);
 
             if (!$commitResult['success']) {
                 $io->error("Failed to create commit: " . $commitResult['error']);

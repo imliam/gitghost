@@ -21,7 +21,7 @@ class RepoManager
         $authorFilter = $filterAuthor ? "--author=$filterAuthor" : '';
 
         $logOutput = [];
-        exec("git log $authorFilter --pretty=format:'%H|%s|%at'", $logOutput);
+        exec("git log $authorFilter --pretty=format:\"%H|%s|%at\"", $logOutput);
 
         // Process each commit
         $newCommits = [];

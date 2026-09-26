@@ -9,9 +9,10 @@ class GitHelper
      *
      * @param string $command The Git command to run (e.g., "git log").
      * @param string $workingDirectory The directory where the command should be run.
+     * @param ?string $timestamp GIT_COMMITER_DATE as environment variable
      * @return array An array with 'success' (bool), 'output' (array of lines), and 'error' (string).
      */
-    public static function run(string $command, string $workingDirectory): array
+    public static function run(string $command, string $workingDirectory, ?string $timestamp = null): array
     {
         $descriptorSpec = [
             0 => ['pipe', 'r'], // STDIN
@@ -19,7 +20,13 @@ class GitHelper
             2 => ['pipe', 'w'], // STDERR
         ];
 
-        $process = proc_open($command, $descriptorSpec, $pipes, $workingDirectory);
+        // Build environment instead of embedding it in command as Windows can't handle this
+        $env = getenv();
+        if ($timestamp !== null) {
+            $env['GIT_COMMITTER_DATE'] = $timestamp;
+        }
+
+        $process = proc_open($command, $descriptorSpec, $pipes, $workingDirectory, $env);
 
         if (!is_resource($process)) {
             return [
@@ -39,7 +46,9 @@ class GitHelper
 
         return [
             'success' => $returnCode === 0,
-            'output' => explode(PHP_EOL, trim($output)),
+            // Git always outputs as \n, even in Windows, still
+            // Use a regex to match either \r\n, \r, or \n
+            'output' => preg_split('/\r\n|\r|\n/', trim($output)),
             'error' => trim($error),
         ];
     }
